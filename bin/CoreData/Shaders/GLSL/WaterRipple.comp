@@ -1,0 +1,49 @@
+#version 450
+
+layout(local_size_x = 8, local_size_y = 8) in;
+
+// SSBO binding 0: current wave heights (read/write)
+layout(std430, set = 0, binding = 0) buffer BufCurr { float curr[]; };
+// SSBO binding 1: previous wave heights (read/write)
+layout(std430, set = 0, binding = 1) buffer BufPrev { float prev[]; };
+// SSBO binding 2: source impulses (read, cleared after use)
+layout(std430, set = 0, binding = 2) buffer BufSource { float source[]; };
+// SSBO binding 3: simulation parameters
+layout(std430, set = 0, binding = 3) buffer BufParams {
+    int gridSize;
+    float damping;
+    int absorbEdge;
+    float pad0;
+};
+
+void main()
+{
+    int x = int(gl_GlobalInvocationID.x);
+    int y = int(gl_GlobalInvocationID.y);
+
+    if (x < 1 || x >= gridSize - 1 || y < 1 || y >= gridSize - 1)
+        return;
+
+    int i = y * gridSize + x;
+
+    // 4-neighbour wave equation
+    float val = (curr[i - 1] + curr[i + 1] +
+                 curr[i - gridSize] + curr[i + gridSize]) * 0.5 - prev[i];
+    val *= damping;
+    val += source[i];
+
+    // Absorbing boundary: ramp down near edges
+    float edge = 1.0;
+    if (x < absorbEdge)           edge = min(edge, float(x)              / float(absorbEdge));
+    if (x >= gridSize - absorbEdge) edge = min(edge, float(gridSize-1-x) / float(absorbEdge));
+    if (y < absorbEdge)           edge = min(edge, float(y)              / float(absorbEdge));
+    if (y >= gridSize - absorbEdge) edge = min(edge, float(gridSize-1-y) / float(absorbEdge));
+    val *= edge;
+
+    // Write to prev (double-buffer swap: prev gets old curr, curr gets new value)
+    prev[i] = curr[i];
+    curr[i] = clamp(val, -2.0, 2.0);
+
+    // Clear source after use
+    source[i] = 0.0;
+}

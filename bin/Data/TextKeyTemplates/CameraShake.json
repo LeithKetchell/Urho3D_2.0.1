@@ -1,0 +1,11 @@
+{
+  "name": "CameraShake",
+  "category": "camera",
+  "color": "#CC40CC",
+  "description": "Trigger a camera shake effect",
+  "fields": [
+    { "name": "amplitude", "type": "Float", "default": 0.15, "description": "Shake intensity in world units" },
+    { "name": "decay", "type": "Float", "default": 3.0, "description": "Exponential decay rate" },
+    { "name": "duration", "type": "Float", "default": 0.5, "description": "Shake duration in seconds" }
+  ]
+}

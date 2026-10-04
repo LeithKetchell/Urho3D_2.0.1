@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<material>
+	<technique name="Techniques/Diff.xml" />
+	<shader psdefines="ALPHAMASK" />
+	<texture unit="diffuse" name="Textures/Pond/Pond_Plants_Atlas.png" />
+	<parameter name="MatDiffColor" value="0.8 0.8 0.8 1" />
+	<parameter name="MatSpecColor" value="0.1 0.1 0.1 8" />
+	<parameter name="MatEmissiveColor" value="0 0 0 1" />
+	<cull value="none" />
+</material>

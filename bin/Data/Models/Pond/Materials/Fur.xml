@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<material>
+	<technique name="Techniques/Diff.xml" />
+	<texture unit="diffuse" name="Textures/Fur-skin.png" />
+	<parameter name="MatDiffColor" value="0.236555 0.14043 0.112623 1" />
+	<parameter name="MatSpecColor" value="1 1 1 9.60784" />
+	<parameter name="MatEmissiveColor" value="0 0 0 1" />
+</material>

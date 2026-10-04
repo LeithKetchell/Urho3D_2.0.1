@@ -1,0 +1,16 @@
+{
+  "name": "campfire_burn_curve",
+  "keys": [{
+    "name": "fuel_to_burnrate",
+    "driverParam": "fuelRatio",
+    "drivenParam": "burnRateMultiplier",
+    "mode": "smooth",
+    "points": [
+      {"in": 0.0,  "out": 0.1},
+      {"in": 0.1,  "out": 0.3},
+      {"in": 0.3,  "out": 0.5},
+      {"in": 0.6,  "out": 0.75},
+      {"in": 1.0,  "out": 1.0}
+    ]
+  }]
+}

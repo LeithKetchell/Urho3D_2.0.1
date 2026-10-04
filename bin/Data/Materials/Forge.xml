@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<material>
+	<technique name="Techniques/DiffNormalEmissive.xml" />
+	<texture unit="diffuse" name="Textures/Forge_baseColor.png" />
+	<texture unit="normal" name="Textures/Forge_normal.png" />
+	<texture unit="emissive" name="Textures/Forge_emissive.png" />
+	<parameter name="MatDiffColor" value="1 1 1 1" />
+	<parameter name="MatSpecColor" value="1 1 1 0" />
+	<parameter name="MatEmissiveColor" value="1 1 1 1" />
+	<cull value="none" />
+	<shadowcull value="none" />
+</material>

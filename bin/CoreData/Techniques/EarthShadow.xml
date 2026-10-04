@@ -1,0 +1,3 @@
+<technique vs="EarthShadow" ps="EarthShadow">
+    <pass name="postopaque" blend="alpha" depthwrite="true" />
+</technique>

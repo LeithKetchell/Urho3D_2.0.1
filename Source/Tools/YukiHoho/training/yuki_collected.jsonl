@@ -1,0 +1,3 @@
+{"messages": [{"role": "user", "content": "Absorb the file bin/Data/Training/html_tutorial.txt using the !absorb command.\n"}, {"role": "assistant", "content": "!absorb bin/Data/Training/html_tutorial.txt"}]}
+{"messages": [{"role": "user", "content": "The tool results above are available. If the task requires further tool calls, issue them now. Otherwise, summarize what you accomplished."}, {"role": "assistant", "content": "I've absorbed the HTML tutorial text from `bin/Data/Training/html_tutorial.txt` into `training/absorbed.txt`. This will be useful for training the AI to extract text from HTML content."}]}
+{"messages": [{"role": "user", "content": "!reload"}, {"role": "assistant", "content": "!reload"}]}

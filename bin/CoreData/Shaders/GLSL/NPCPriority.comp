@@ -1,0 +1,99 @@
+#version 450
+
+layout(local_size_x = 64) in;
+
+// Driver values per NPC (6 floats, padded to 8 for alignment)
+struct NPCDrivers {
+    float hunger;       // 0-100, low = hungry
+    float thirst;       // 0-100, low = thirsty
+    float warmth;       // 0-100, low = cold
+    float stamina;      // 0-100, low = exhausted
+    float darkness;     // 0-1, high = night
+    float hpFraction;   // 0-1, low = dying
+    float pad0;
+    float pad1;
+};
+
+// A single priority curve: maps one driver to a priority score
+// Up to 8 control points per curve, linear interpolation
+struct PriorityCurve {
+    int driverIndex;    // which driver (0=hunger, 1=thirst, 2=warmth, 3=stamina, 4=darkness, 5=hp)
+    int numPoints;      // active control points (max 8)
+    int taskId;         // STASK_* value this curve produces
+    int pad0;
+    // Control points: (in, out) pairs — sorted ascending by in
+    vec2 points[8];     // .x = driver value, .y = priority score
+};
+
+// SSBO 0: NPC driver values (one per NPC)
+layout(std430, set = 0, binding = 0) readonly buffer BufDrivers { NPCDrivers drivers[]; };
+// SSBO 1: Priority curves (shared across all NPCs)
+layout(std430, set = 0, binding = 1) readonly buffer BufCurves {
+    int numCurves;
+    int numNPCs;
+    int pad0;
+    int pad1;
+    PriorityCurve curves[];
+};
+// SSBO 2: Output — best task per NPC
+layout(std430, set = 0, binding = 2) writeonly buffer BufOutput {
+    ivec2 results[];  // .x = taskId, .y = priority * 1000 (fixed-point for readback)
+};
+// SSBO 3: unused (reserved for future params)
+layout(std430, set = 0, binding = 3) buffer BufReserved { int reserved[]; };
+
+float evaluateCurve(PriorityCurve curve, float driverValue)
+{
+    if (curve.numPoints <= 0)
+        return 0.0;
+    if (curve.numPoints == 1)
+        return curve.points[0].y;
+
+    // Clamp to curve range
+    if (driverValue <= curve.points[0].x)
+        return curve.points[0].y;
+    if (driverValue >= curve.points[curve.numPoints - 1].x)
+        return curve.points[curve.numPoints - 1].y;
+
+    // Linear interpolation between bracketing points
+    for (int i = 0; i < curve.numPoints - 1; ++i)
+    {
+        if (driverValue >= curve.points[i].x && driverValue <= curve.points[i + 1].x)
+        {
+            float range = curve.points[i + 1].x - curve.points[i].x;
+            if (range < 0.001)
+                return curve.points[i].y;
+            float t = (driverValue - curve.points[i].x) / range;
+            return mix(curve.points[i].y, curve.points[i + 1].y, t);
+        }
+    }
+    return 0.0;
+}
+
+void main()
+{
+    uint npcIndex = gl_GlobalInvocationID.x;
+    if (npcIndex >= numNPCs)
+        return;
+
+    NPCDrivers d = drivers[npcIndex];
+    float driverValues[6] = float[6](d.hunger, d.thirst, d.warmth, d.stamina, d.darkness, d.hpFraction);
+
+    int bestTask = 0;       // STASK_IDLE
+    float bestPriority = 0.0;
+
+    for (int c = 0; c < numCurves; ++c)
+    {
+        PriorityCurve curve = curves[c];
+        int di = clamp(curve.driverIndex, 0, 5);
+        float priority = evaluateCurve(curve, driverValues[di]);
+
+        if (priority > bestPriority)
+        {
+            bestPriority = priority;
+            bestTask = curve.taskId;
+        }
+    }
+
+    results[npcIndex] = ivec2(bestTask, int(bestPriority * 1000.0));
+}

@@ -1,0 +1,3 @@
+<technique vs="UFO" ps="UFO">
+    <pass name="alpha" depthwrite="false" blend="alpha" />
+</technique>

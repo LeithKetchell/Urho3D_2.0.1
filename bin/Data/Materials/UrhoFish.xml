@@ -1,0 +1,12 @@
+<material>
+    <technique name="Techniques/DiffNormalSpecFishWiggle.xml" />
+    <texture unit="diffuse" name="Textures/UrhoDiffuse.png" />
+    <texture unit="normal" name="Textures/UrhoNormals.png" />
+    <texture unit="specular" name="Textures/UrhoSpecular.png" />
+    <parameter name="MatDiffColor" value="1 1 1 1" />
+    <parameter name="MatSpecColor" value="0.3 0.3 0.3 32" />
+    <parameter name="MatEmissiveColor" value="0 0 0 1" />
+    <parameter name="WiggleAmplitude" value="0.03" />
+    <parameter name="WiggleFrequency" value="2.0" />
+    <parameter name="WiggleBodyStart" value="0.4" />
+</material>

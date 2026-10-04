@@ -1,0 +1,8 @@
+<renderpath>
+    <command type="quad" tag="MotionBlur" vs="MotionBlur" ps="MotionBlur" psdefines="MOTIONBLUR HWDEPTH" output="viewport">
+        <parameter name="MotionBlurStrength" value="1.0" />
+        <parameter name="MotionBlurSamples" value="8" />
+        <texture unit="diffuse" name="viewport" />
+        <texture unit="depth" name="depth" />
+    </command>
+</renderpath>

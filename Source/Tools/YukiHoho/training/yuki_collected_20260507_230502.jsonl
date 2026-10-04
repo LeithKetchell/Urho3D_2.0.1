@@ -1,0 +1,8 @@
+{"messages": [{"role": "user", "content": "hello, yuki"}, {"role": "assistant", "content": "Hello! How can I assist you today?"}]}
+{"messages": [{"role": "user", "content": "read bin/data/training/html_tutorial.txt"}, {"role": "assistant", "content": "!read bin/data/training/html_tutorial.txt"}]}
+{"messages": [{"role": "user", "content": "whats your cwd?"}, {"role": "assistant", "content": "I'm in the root directory of the Urho3D project."}]}
+{"messages": [{"role": "user", "content": "ok so you should see bin/Data/Training"}, {"role": "assistant", "content": "!ls bin/Data/Training"}]}
+{"messages": [{"role": "user", "content": "see it?"}, {"role": "assistant", "content": "I'm sorry, but I'm not sure what you're asking. Could you please provide more context or clarify your question?"}]}
+{"messages": [{"role": "user", "content": "I have asked you to locate and read a file called html_tutorial.txt, it resides in the bin/Data/Training subfolder of urho project root"}, {"role": "assistant", "content": "!read bin/Data/Training/html_tutorial.txt"}]}
+{"messages": [{"role": "user", "content": "did you read the file?"}, {"role": "assistant", "content": "!read /path/to/file"}]}
+{"messages": [{"role": "user", "content": "Leith wants you to read the file bin/Data/Training/html_tutorial.txt\n"}, {"role": "assistant", "content": "!read bin/Data/Training/html_tutorial.txt"}]}

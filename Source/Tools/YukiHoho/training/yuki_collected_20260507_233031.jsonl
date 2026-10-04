@@ -1,0 +1,1 @@
+{"messages": [{"role": "user", "content": "Read the file bin/Data/Training/html_tutorial.txt and process it as training data. Use chunked reads if needed.\n"}, {"role": "assistant", "content": "!read bin/Data/Training/html_tutorial.txt"}]}

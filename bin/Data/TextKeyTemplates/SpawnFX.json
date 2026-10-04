@@ -1,0 +1,12 @@
+{
+  "name": "SpawnFX",
+  "category": "fx",
+  "color": "#FF8020",
+  "description": "Spawn a particle effect at a bone or offset",
+  "fields": [
+    { "name": "effect", "type": "ResourceRef", "resourceType": "ParticleEffect", "default": "Particle/Smoke.xml", "description": "Particle effect resource path" },
+    { "name": "bone", "type": "String", "default": "", "description": "Bone to attach to (empty = root)" },
+    { "name": "offset", "type": "Vector3", "default": [0.0, 0.0, 0.0], "description": "Local offset from bone" },
+    { "name": "duration", "type": "Float", "default": 2.0, "description": "Effect lifetime in seconds" }
+  ]
+}

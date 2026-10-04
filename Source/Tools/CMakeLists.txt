@@ -1,0 +1,67 @@
+# Copyright (c) 2008-2022 the Urho3D project
+# License: MIT
+
+# Set project name
+project (Urho3D-Tools)
+
+# Find Urho3D library
+find_package (Urho3D REQUIRED)
+include_directories (${URHO3D_INCLUDE_DIRS})
+
+# Urho3DPlayer target is rather special, although it is here, it is not a tool because it is built into target platform binary as opposed to host platform
+# In order to test the player on Web platform built using Emscripten, the request parameters need to be parsed into Module['argument'] (see https://github.com/kripken/emscripten/blob/master/src/emrun_prejs.js for inspiration)
+# The CTest could "run" the Urho3DPlayer.html with script name as parameter, thanks to emrun performing this parsing automatically
+# In a production environment, however, the request parameters parsing has to be done by the application itself one way or another
+
+# Build host-tools using host compiler toolchain
+if (CMAKE_CROSSCOMPILING)
+    check_native_compiler_exist ()
+    # When cross-compiling, build the host tool as external project
+    include (ExternalProject)
+    if (IOS OR TVOS)
+        # When cross-compiling for iOS/tvOS the host environment has been altered by xcodebuild for the said platform, the following fix is required to reset the host environment before spawning another process to configure/generate project file for external project
+        # Also workaround a known CMake/Xcode generator bug which prevents it from installing native tool binaries correctly
+        set (ALTERNATE_COMMAND CMAKE_COMMAND /usr/bin/env -i PATH=$ENV{PATH} CC=${SAVED_CC} CXX=${SAVED_CXX} CI=$ENV{CI} ${CMAKE_COMMAND} BUILD_COMMAND bash -c "sed -i '' 's/\$$\(EFFECTIVE_PLATFORM_NAME\)//g' CMakeScripts/install_postBuildPhase.make*")
+    else ()
+        set (ALTERNATE_COMMAND CMAKE_COMMAND ${CMAKE_COMMAND} -E env CC=${SAVED_CC} CXX=${SAVED_CXX} CI=$ENV{CI} ${CMAKE_COMMAND})
+    endif ()
+    if (URHO3D_PACKAGING)
+        ExternalProject_Add (PackageTool
+            SOURCE_DIR ${CMAKE_SOURCE_DIR}/Source/Tools/PackageTool
+            CMAKE_ARGS -D URHO3D_DEPLOYMENT_TARGET=generic -D DEST_RUNTIME_DIR=${CMAKE_BINARY_DIR}/bin/tool -D BAKED_CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR} -D BAKED_CMAKE_BINARY_DIR=${CMAKE_BINARY_DIR} -D CMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}
+            ${ALTERNATE_COMMAND})
+        add_make_clean_files (${CMAKE_BINARY_DIR}/bin/tool/PackageTool)
+        if (CMAKE_HOST_WIN32 AND NOT HAS_MKLINK)
+            add_dependencies (PackageTool Urho3D)   # Ensure Urho3D headers are fresh when building PackageTool externally on Windows host system without MKLINK
+        endif ()
+        install (PROGRAMS ${CMAKE_BINARY_DIR}/bin/tool/PackageTool DESTINATION ${DEST_RUNTIME_DIR}/tool)
+    endif ()
+    if (URHO3D_GENERATEBINDINGS)
+        ExternalProject_Add (BindingGenerator
+            SOURCE_DIR ${CMAKE_SOURCE_DIR}/Source/Tools/BindingGenerator
+            CMAKE_ARGS -D URHO3D_DEPLOYMENT_TARGET=generic -D DEST_RUNTIME_DIR=${CMAKE_BINARY_DIR}/bin/tool -D BAKED_CMAKE_SOURCE_DIR=${CMAKE_SOURCE_DIR} -D BAKED_CMAKE_BINARY_DIR=${CMAKE_BINARY_DIR} -D CMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}
+            ${ALTERNATE_COMMAND})
+        add_make_clean_files (${CMAKE_BINARY_DIR}/bin/tool/BindingGenerator)
+        if (CMAKE_HOST_WIN32 AND NOT HAS_MKLINK)
+            add_dependencies (BindingGenerator Urho3D)
+        endif ()
+        install (PROGRAMS ${CMAKE_BINARY_DIR}/bin/tool/BindingGenerator DESTINATION ${DEST_RUNTIME_DIR}/tool)
+    endif ()
+endif ()
+
+if (URHO3D_TOOLS)
+    file (GLOB tool_dirs LIST_DIRECTORIES true RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/*)
+    list (SORT tool_dirs)
+    foreach (dir ${tool_dirs})
+        if (IS_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/${dir}" AND EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/${dir}/CMakeLists.txt")
+            add_subdirectory (${dir})
+        endif ()
+    endforeach ()
+elseif (NOT CMAKE_CROSSCOMPILING AND URHO3D_PACKAGING)
+    # PackageTool target is required but we are not cross-compiling, so build it as per normal
+    add_subdirectory (PackageTool)
+endif ()
+
+if (NOT CMAKE_CROSSCOMPILING AND URHO3D_GENERATEBINDINGS AND NOT URHO3D_TOOLS)
+    add_subdirectory (BindingGenerator)
+endif ()

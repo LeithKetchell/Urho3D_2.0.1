@@ -1,0 +1,50 @@
+{
+    "name": "Test Curves",
+    "keys": [
+        {
+            "name": "Linear_0_to_100",
+            "driver": "TestDriver",
+            "driven": "TestLinear",
+            "mode": "linear",
+            "points": [
+                {"in": 0.0, "out": 0.0},
+                {"in": 1.0, "out": 100.0}
+            ]
+        },
+        {
+            "name": "Step_Trigger_at_0.5",
+            "driver": "TestDriver",
+            "driven": "TestStep",
+            "mode": "step",
+            "points": [
+                {"in": 0.0,  "out": 0.0},
+                {"in": 0.5,  "out": 1.0},
+                {"in": 0.51, "out": 0.0}
+            ]
+        },
+        {
+            "name": "Smooth_Bell",
+            "driver": "TestDriver",
+            "driven": "TestSmooth",
+            "mode": "smooth",
+            "points": [
+                {"in": 0.0, "out": 0.0},
+                {"in": 0.5, "out": 1.0},
+                {"in": 1.0, "out": 0.0}
+            ]
+        },
+        {
+            "name": "CatmullRom_S_Curve",
+            "driver": "TestDriver",
+            "driven": "TestCatmullRom",
+            "mode": "catmullrom",
+            "points": [
+                {"in": 0.0,  "out": 0.0},
+                {"in": 0.25, "out": 10.0},
+                {"in": 0.5,  "out": 80.0},
+                {"in": 0.75, "out": 90.0},
+                {"in": 1.0,  "out": 100.0}
+            ]
+        }
+    ]
+}

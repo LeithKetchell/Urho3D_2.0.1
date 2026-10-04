@@ -1,0 +1,8 @@
+<cubemap>
+    <face name="Autumn_PosX.png" />
+    <face name="Autumn_NegX.png" />
+    <face name="Autumn_PosY.png" />
+    <face name="Autumn_NegY.png" />
+    <face name="Autumn_PosZ.png" />
+    <face name="Autumn_NegZ.png" />
+</cubemap>

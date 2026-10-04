@@ -1,0 +1,257 @@
+#include "Uniforms.glsl"
+#include "Samplers.glsl"
+#include "Transform.glsl"
+#include "ScreenPos.glsl"
+#include "Lighting.glsl"
+#include "Fog.glsl"
+
+varying vec2 vTexCoord;
+
+#ifndef GL_ES
+varying vec2 vDetailTexCoord;
+#else
+varying mediump vec2 vDetailTexCoord;
+#endif
+
+varying vec3 vNormal;
+varying vec4 vWorldPos;
+#ifdef PERPIXEL
+    #ifdef SHADOW
+        #ifndef GL_ES
+            varying vec4 vShadowPos[NUMCASCADES];
+        #else
+            varying highp vec4 vShadowPos[NUMCASCADES];
+        #endif
+    #endif
+    #ifdef SPOTLIGHT
+        varying vec4 vSpotPos;
+    #endif
+    #ifdef POINTLIGHT
+        varying vec3 vCubeMaskVec;
+    #endif
+#else
+    varying vec3 vVertexLight;
+    varying vec4 vScreenPos;
+    #ifdef ENVCUBEMAP
+        varying vec3 vReflectionVec;
+    #endif
+    #if defined(LIGHTMAP) || defined(AO)
+        varying vec2 vTexCoord2;
+    #endif
+#endif
+
+uniform sampler2D sWeightMap0;
+uniform sampler2D sDetailMap1;
+uniform sampler2D sDetailMap2;
+uniform sampler2D sDetailMap3;
+uniform sampler2D sWaterMap4;
+uniform sampler2D sTramplingMap5;
+
+uniform float cWaterLevel;
+uniform float cTerrainSpacingY;
+
+// cDetailTiling hardcoded — CUSTOM_MATERIAL_CBUFFER upload broken on Vulkan
+const vec2 cDetailTiling = vec2(32.0, 32.0);
+
+void VS()
+{
+    mat4 modelMatrix = iModelMatrix;
+    vec3 worldPos = GetWorldPos(modelMatrix);
+    gl_Position = GetClipPos(worldPos);
+    vNormal = GetWorldNormal(modelMatrix);
+    vWorldPos = vec4(worldPos, GetDepth(gl_Position));
+    vTexCoord = GetTexCoord(iTexCoord);
+    vDetailTexCoord = cDetailTiling * vTexCoord;
+
+    #ifdef PERPIXEL
+        // Per-pixel forward lighting
+        vec4 projWorldPos = vec4(worldPos, 1.0);
+
+        #ifdef SHADOW
+            // Shadow projection: transform from world space to shadow space
+            for (int i = 0; i < NUMCASCADES; i++)
+                vShadowPos[i] = GetShadowPos(i, vNormal, projWorldPos);
+        #endif
+
+        #ifdef SPOTLIGHT
+            // Spotlight projection: transform from world space to projector texture coordinates
+            vSpotPos = projWorldPos * cLightMatrices[0];
+        #endif
+
+        #ifdef POINTLIGHT
+            vCubeMaskVec = (worldPos - cLightPos.xyz) * mat3(cLightMatrices[0][0].xyz, cLightMatrices[0][1].xyz, cLightMatrices[0][2].xyz);
+        #endif
+    #else
+        // Ambient & per-vertex lighting
+        #if defined(LIGHTMAP) || defined(AO)
+            // If using lightmap, disregard zone ambient light
+            // If using AO, calculate ambient in the PS
+            vVertexLight = vec3(0.0, 0.0, 0.0);
+            vTexCoord2 = iTexCoord1;
+        #else
+            vVertexLight = GetHemisphereAmbient(vNormal);
+        #endif
+
+        #ifdef NUMVERTEXLIGHTS
+            for (int i = 0; i < NUMVERTEXLIGHTS; ++i)
+                vVertexLight += GetVertexLight(i, worldPos, vNormal) * cVertexLights[i * 3].rgb;
+        #endif
+
+        vScreenPos = GetScreenPos(gl_Position);
+
+        #ifdef ENVCUBEMAP
+            vReflectionVec = worldPos - cCameraPos;
+        #endif
+    #endif
+}
+
+void PS()
+{
+    ApplyClipPlane();
+
+    // Get material diffuse albedo
+    vec3 weights = texture2D(sWeightMap0, vTexCoord).rgb;
+    float sumWeights = weights.r + weights.g + weights.b;
+    if (sumWeights < 0.001)
+        weights = vec3(1.0, 0.0, 0.0);  // fallback to layer 1 where weight map is empty
+    else
+        weights /= sumWeights;
+
+    // Phase 19: worn paths — trampling shifts blend toward dirt (detail 3)
+    float trampling = texture2D(sTramplingMap5, vTexCoord).a;
+    float pathBlend = smoothstep(0.3, 0.8, trampling);  // visible above 30%, full at 80%
+    weights = mix(weights, vec3(0.0, 0.0, 1.0), pathBlend);  // push toward detail 3 (dirt)
+
+    vec4 diffColor = cMatDiffColor * (
+        weights.r * texture2D(sDetailMap1, vDetailTexCoord) +
+        weights.g * texture2D(sDetailMap2, vDetailTexCoord) +
+        weights.b * texture2D(sDetailMap3, vDetailTexCoord)
+    );
+
+    // Water table influence — terrain near or below water level looks wet/dark
+    float heightAboveWater = vWorldPos.y - cWaterLevel;
+    float wetness = 1.0 - smoothstep(-1.0, 2.0, heightAboveWater);  // full wet below, fades 0-2m above
+    if (wetness > 0.0)
+    {
+        diffColor.rgb *= mix(1.0, 0.55, wetness);                   // darken
+        float grey = dot(diffColor.rgb, vec3(0.299, 0.587, 0.114));
+        diffColor.rgb = mix(diffColor.rgb, diffColor.rgb * 1.3 - vec3(grey * 0.3), wetness * 0.4);  // saturate
+    }
+
+    // Get material specular albedo
+    vec3 specColor = cMatSpecColor.rgb;
+
+    // Water map — painted river water with animated surface
+    float waterVal = texture2D(sWaterMap4, vTexCoord).r;
+    if (waterVal > 0.0)
+    {
+        float waterWorldY = waterVal * 255.0 * cTerrainSpacingY;
+        float waterDepth = waterWorldY - vWorldPos.y;
+        if (waterDepth > 0.0)
+        {
+            // Animated surface noise — two scrolling sine waves at different scales
+            vec2 wUV = vWorldPos.xz;
+            float t = cElapsedTimePS;
+            float ripple = sin(wUV.x * 2.0 + t * 0.8) * cos(wUV.y * 1.5 + t * 0.6) * 0.5
+                         + sin(wUV.x * 3.7 - t * 0.5) * cos(wUV.y * 2.3 + t * 0.9) * 0.3;
+
+            // Depth-based color with animated variation
+            vec3 shallowColor = vec3(0.15, 0.45, 0.35);
+            vec3 deepColor = vec3(0.02, 0.08, 0.15);
+            float depthFactor = clamp(waterDepth / 5.0, 0.0, 1.0);
+            vec3 waterColor = mix(shallowColor, deepColor, depthFactor);
+            waterColor += ripple * 0.04 * (1.0 - depthFactor);
+
+            // Fresnel — more opaque and reflective at grazing angles
+            vec3 viewDir = normalize(cCameraPosPS - vWorldPos.xyz);
+            vec3 N = normalize(vNormal);
+            float NdotV = max(dot(N, viewDir), 0.0);
+            float fresnel = pow(1.0 - NdotV, 3.0);
+
+            float waterAlpha = clamp(mix(0.4, 0.95, depthFactor) + fresnel * 0.3, 0.0, 0.98);
+            diffColor.rgb = mix(diffColor.rgb, waterColor, waterAlpha);
+
+            // Wet surfaces are reflective — boost specular, don't kill it
+            specColor = mix(specColor, vec3(0.8), waterAlpha * 0.6);
+
+            // Surface glint from ripple peaks
+            float glint = pow(max(ripple, 0.0), 2.0) * fresnel * 0.15;
+            diffColor.rgb += vec3(glint);
+        }
+    }
+
+    // Get normal
+    vec3 normal = normalize(vNormal);
+
+    // Get fog factor
+    #ifdef HEIGHTFOG
+        float fogFactor = GetHeightFogFactor(vWorldPos.w, vWorldPos.y);
+    #else
+        float fogFactor = GetFogFactor(vWorldPos.w);
+    #endif
+
+    #if defined(PERPIXEL)
+        // Per-pixel forward lighting
+        vec3 lightColor;
+        vec3 lightDir;
+        vec3 finalColor;
+
+        float diff = GetDiffuse(normal, vWorldPos.xyz, lightDir);
+
+        #ifdef SHADOW
+            diff *= GetShadow(vShadowPos, vWorldPos.w);
+        #endif
+
+        #if defined(SPOTLIGHT)
+            lightColor = vSpotPos.w > 0.0 ? texture2DProj(sLightSpotMap, vSpotPos).rgb * cLightColor.rgb : vec3(0.0, 0.0, 0.0);
+        #elif defined(CUBEMASK)
+            lightColor = textureCube(sLightCubeMap, vCubeMaskVec).rgb * cLightColor.rgb;
+        #else
+            lightColor = cLightColor.rgb;
+        #endif
+
+        #ifdef SPECULAR
+            float spec = GetSpecular(normal, cCameraPosPS - vWorldPos.xyz, lightDir, cMatSpecColor.a);
+            finalColor = diff * lightColor * (diffColor.rgb + spec * specColor * cLightColor.a);
+        #else
+            finalColor = diff * lightColor * diffColor.rgb;
+        #endif
+
+        #ifdef AMBIENT
+            finalColor += HemisphereAmbient(normal, cSkyAmbient, cGroundAmbient) * diffColor.rgb;
+            finalColor += cMatEmissiveColor;
+            gl_FragColor = vec4(GetFog(finalColor, fogFactor), diffColor.a);
+        #else
+            gl_FragColor = vec4(GetLitFog(finalColor, fogFactor), diffColor.a);
+        #endif
+    #elif defined(PREPASS)
+        // Fill light pre-pass G-Buffer
+        float specPower = cMatSpecColor.a / 255.0;
+
+        gl_FragData[0] = vec4(normal * 0.5 + 0.5, specPower);
+        gl_FragData[1] = vec4(EncodeDepth(vWorldPos.w), 0.0);
+    #elif defined(DEFERRED)
+        // Fill deferred G-buffer
+        float specIntensity = specColor.g;
+        float specPower = cMatSpecColor.a / 255.0;
+
+        gl_FragData[0] = vec4(GetFog(vVertexLight * diffColor.rgb, fogFactor), 1.0);
+        gl_FragData[1] = fogFactor * vec4(diffColor.rgb, specIntensity);
+        gl_FragData[2] = vec4(normal * 0.5 + 0.5, specPower);
+        gl_FragData[3] = vec4(EncodeDepth(vWorldPos.w), 0.0);
+    #else
+        // Ambient & per-vertex lighting
+        vec3 finalColor = vVertexLight * diffColor.rgb;
+
+        #ifdef MATERIAL
+            // Add light pre-pass accumulation result
+            // Lights are accumulated at half intensity. Bring back to full intensity now
+            vec4 lightInput = 2.0 * texture2DProj(sLightBuffer, vScreenPos);
+            vec3 lightSpecColor = lightInput.a * lightInput.rgb / max(GetIntensity(lightInput.rgb), 0.001);
+
+            finalColor += lightInput.rgb * diffColor.rgb + lightSpecColor * specColor;
+        #endif
+
+        gl_FragColor = vec4(GetFog(finalColor, fogFactor), diffColor.a);
+    #endif
+}

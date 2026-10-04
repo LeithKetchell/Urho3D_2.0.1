@@ -1,0 +1,248 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rake build:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git remote:*)",
+      "Bash(git push:*)",
+      "Bash(git ls-tree:*)",
+      "Bash(do)",
+      "Bash(if grep -q \"profilerUI_->Update\" $f)",
+      "Bash(then)",
+      "Bash(else)",
+      "Bash(make:*)",
+      "Bash(git reset:*)",
+      "Bash(pgrep:*)",
+      "Bash(ssh-keygen:*)",
+      "Bash(cat:*)",
+      "Bash(ssh:*)",
+      "Bash(cmake --build:*)",
+      "Bash(g++:*)",
+      "Bash(./phase1_benchmark_SIMD)",
+      "Bash(cmake:*)",
+      "Bash(wait)",
+      "Bash(ls:*)",
+      "Bash(rm:*)",
+      "Bash(./bin/04_StaticScene:*)",
+      "Bash(echo:*)",
+      "Bash(gdb:*)",
+      "Bash(nm:*)",
+      "Bash(timeout 10 gdb:*)",
+      "Bash(objdump:*)",
+      "Bash(readelf:*)",
+      "Bash(timeout 15 gdb:*)",
+      "Bash(tee:*)",
+      "Bash(timeout:*)",
+      "Bash(killall:*)",
+      "Bash(kill:*)",
+      "Bash(pkill:*)",
+      "Bash(./bin/05_AnimatingScene:*)",
+      "Bash(gh auth login:*)",
+      "Bash(git config:*)",
+      "Bash(gh auth:*)",
+      "Bash(GIT_TRACE=1 GIT_CURL_VERBOSE=1 git push:*)",
+      "Bash(env GIT_TRACE=1 git push:*)",
+      "Bash(find:*)",
+      "Bash(apt-cache search:*)",
+      "Bash(sudo apt-get install:*)",
+      "Bash(dpkg:*)",
+      "Bash(test:*)",
+      "Bash(./bin/01_HelloWorld:*)",
+      "Bash(strace:*)",
+      "Bash(/dev/null)",
+      "Bash(vulkaninfo:*)",
+      "WebSearch",
+      "Bash(VK_INSTANCE_LAYERS=VK_LAYER_KHRONOS_validation VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json timeout:*)",
+      "Bash(VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json timeout 15 ./bin/01_HelloWorld:*)",
+      "Bash(/tmp/hash_test:*)",
+      "Bash(if [ -f bin/01_HelloWorld ])",
+      "Bash(then echo \"BUILD SUCCESS: bin/01_HelloWorld exists\")",
+      "Bash(else echo \"BUILD IN PROGRESS or FAILED\")",
+      "Bash(fi)",
+      "Bash(then echo \"=== BUILD SUCCESS ===\")",
+      "Bash(else echo \"Still building...\")",
+      "Bash(then echo \"BUILD COMPLETE\")",
+      "Bash(else echo \"BUILD STATUS:\")",
+      "Bash(else echo \"Build status:\")",
+      "Bash(URHO3D_LOG_LEVEL=DEBUG timeout 10 ./bin/01_HelloWorld:*)",
+      "Bash(RADV_DEBUG=info,startup timeout 10:*)",
+      "Bash(VK_INSTANCE_LAYERS=VK_LAYER_KHRONOS_validation timeout 10 ./bin/01_HelloWorld:*)",
+      "Bash(VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/radeon_icd.x86_64.json timeout 10 ./bin/01_HelloWorld:*)",
+      "Bash(VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json timeout 10 ./bin/01_HelloWorld:*)",
+      "Bash(coredumpctl list:*)",
+      "Bash(coredumpctl gdb:*)",
+      "Bash(coredumpctl dump:*)",
+      "Bash(then ls -lh bin/01_HelloWorld)",
+      "Bash(else echo \"Building...\")",
+      "Bash(then stat -c \"%y %n\" bin/01_HelloWorld)",
+      "Bash(else echo \"BUILD FAILED\")",
+
+      "Bash(VK_INSTANCE_LAYERS=VK_LAYER_KHRONOS_validation VK_LOADER_DEBUG=all timeout:*)",
+      "Bash(VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json VK_INSTANCE_LAYERS=VK_LAYER_KHRONOS_validation timeout:*)",
+      "Bash(VK_ICD_FILENAMES=/usr/share/vulkan/icd.d/lvp_icd.x86_64.json timeout 5 ./bin/01_HelloWorld:*)",
+      "Bash(apt-cache:*)",
+      "Bash(grep:*)",
+      "Bash(1)",
+      "Bash(dmesg:*)",
+      "Bash(sudo killall:*)",
+      "Bash(sudo kill:*)",
+      "Bash(sudo pkill -9 -f 01_HelloWorld)",
+      "Bash(xargs sudo kill -9)",
+      "Bash(sudo chown:*)",
+      "Bash(DISPLAY=:0 xdotool search:*)",
+      "Bash(coredumpctl info:*)",
+      "Bash(URHO3D_LOG_LEVEL=debug timeout 3 ./03_Sprites:*)",
+      "Bash(xargs:*)",
+      "Bash(renderdoc:*)",
+      "Bash(/home/*/Desktop/URHO/New/renderdoc_1.42/bin/renderdoccmd capture:*)",
+      "Bash(./build-cb/bin/04_StaticScene:*)",
+      "Bash(while ps aux)",
+      "Bash(do sleep 30)",
+      "Bash(done)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl:*)",
+      "WebFetch(domain:api.github.com)",
+      "Bash(./BulletSamples/BS_BasicDemo:*)",
+      "Bash(gh api:*)",
+      "Bash(for f in ConservationTest FreeFall FrictionSlope ModeVisualizer ReducedBenchmark ReducedCollide ReducedGrasp ReducedMotorGrasp Springboard)",
+      "Bash(do echo \"=== $f ===\")",
+      "Bash(for f in CoordinateSystemDemo DynamicTexturedCubeDemo RaytracerSetup RenderInstancingDemo TimeSeriesCanvas TimeSeriesExample TinyRendererSetup TinyVRGui)",
+      "Bash(for f in HelloBulletRobotics MinitaurSetup MinitaurSimulatorExample RobotSimulatorMain VRGloveSimulatorMain b3RobotSimulatorClientAPI)",
+      "Bash(ext=\".cpp\")",
+      "Bash(for f in GripperGraspExample KukaGraspExample R2D2GraspExample)",
+      "Bash(/home/*/Desktop/URHO/New/urho3d-2.0.1/build/bin/tool/AssetImporter:*)",
+      "Bash(tar:*)",
+      "Bash(/home/*/Desktop/URHO/New/urho3d-2.0.1/.claude/hooks/claude_ipc.sh:*)",
+      "Bash(.claude/hooks/claude_ipc.sh:*)",
+      "Bash(/home/*/Desktop/URHO/New/urho3d-2.0.1/.claude/hooks/safe_build.sh:*)",
+      "Bash(.claude/hooks/safe_build.sh:*)",
+      "Bash(gcc:*)",
+      "Bash(unzip:*)"
+    ],
+    "deny": [],
+    "ask": [
+      "Bash(python3:*)"
+    ]
+  },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/claude_ipc.sh announce"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/claude_ipc.sh check"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/claude_ipc.sh notify-idle",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Notification": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/claude_ipc.sh check"
+          }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/broker_write.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Read|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/file_lock.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/muzzle.sh"
+          }
+        ]
+      },
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/screenshot_guard.sh"
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Read|Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/file_lock.sh"
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/claude_ipc.sh handover"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/claude_ipc.sh cleanup",
+            "async": true
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,84 @@
+#version 450
+
+#include "generic_head.glsl"
+#include "types.glsl"
+
+#extension GL_EXT_control_flow_attributes : enable
+#define BLOCK_SIZE 512
+
+layout(local_size_x = BLOCK_SIZE, local_size_y = 1, local_size_z = 1) in;
+
+// Backward pass for cross-entropy loss.
+// Computes: grad_input = (softmax(logits) - targets) * grad[0] / nr
+//
+// Matches CPU: ggml_compute_forward_cross_entropy_loss_back_f32
+// src[0] = grad (scalar upstream gradient)
+// src[1] = logits (src0 of forward pass)
+// src[2] = targets (src1 of forward pass, one-hot or soft labels)
+// dst    = gradient w.r.t. logits, same shape as logits
+//
+// Push constants:
+//   p.KX = nc (number of classes / vocab size, i.e. row width)
+//   p.KY = nr (number of rows)
+//   p.param1 = 1.0 / nr (precomputed on host)
+//
+// Dispatch: one workgroup per row (nr workgroups total)
+
+layout (binding = 0) readonly buffer G  {A_TYPE data_g[];};   // scalar grad
+layout (binding = 1) readonly buffer X  {B_TYPE data_x[];};   // logits [nr * nc]
+layout (binding = 2) readonly buffer L  {A_TYPE data_l[];};   // targets [nr * nc]
+layout (binding = 3) writeonly buffer D {D_TYPE data_d[];};   // output [nr * nc]
+
+shared FLOAT_TYPE tmp[BLOCK_SIZE];
+
+void main() {
+    const uint row = gl_WorkGroupID.z * 262144 + gl_WorkGroupID.y * 512 + gl_WorkGroupID.x;
+    const uint tid = gl_LocalInvocationID.x;
+
+    if (row >= p.KY) {
+        return;
+    }
+
+    const FLOAT_TYPE d_by_nr = FLOAT_TYPE(data_g[0]) * FLOAT_TYPE(p.param1);
+
+    // Phase 1: find max logit in this row (numerical stability)
+    tmp[tid] = FLOAT_TYPE(-1.0f / 0.0f); // -inf
+    [[unroll]] for (uint col = tid; col < p.KX; col += BLOCK_SIZE) {
+        tmp[tid] = max(tmp[tid], FLOAT_TYPE(data_x[row * p.KX + col]));
+    }
+
+    barrier();
+    [[unroll]] for (int s = BLOCK_SIZE / 2; s > 0; s >>= 1) {
+        if (tid < s) {
+            tmp[tid] = max(tmp[tid], tmp[tid + s]);
+        }
+        barrier();
+    }
+
+    const FLOAT_TYPE max_val = tmp[0];
+
+    // Phase 2: compute sum(exp(logit - max))
+    barrier();
+    tmp[tid] = FLOAT_TYPE(0.0f);
+    [[unroll]] for (uint col = tid; col < p.KX; col += BLOCK_SIZE) {
+        tmp[tid] += exp(FLOAT_TYPE(data_x[row * p.KX + col]) - max_val);
+    }
+
+    barrier();
+    [[unroll]] for (int s = BLOCK_SIZE / 2; s > 0; s >>= 1) {
+        if (tid < s) {
+            tmp[tid] += tmp[tid + s];
+        }
+        barrier();
+    }
+
+    const FLOAT_TYPE sum_exp = tmp[0];
+
+    // Phase 3: output = (softmax(logit) - target) * (grad / nr)
+    barrier();
+    [[unroll]] for (uint col = tid; col < p.KX; col += BLOCK_SIZE) {
+        const uint idx = row * p.KX + col;
+        const FLOAT_TYPE sm = exp(FLOAT_TYPE(data_x[idx]) - max_val) / sum_exp;
+        data_d[idx] = D_TYPE((sm - FLOAT_TYPE(data_l[idx])) * d_by_nr);
+    }
+}

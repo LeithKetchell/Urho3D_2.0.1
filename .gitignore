@@ -1,0 +1,236 @@
+# Output directories
+/bin/*
+!/bin/**/
+!/bin/*.bat
+!/bin/*.sh
+/bin/*.app/
+/bin/*.app.dSYM/
+/bin/jit/
+/bin/Screenshots/
+/bin/tool/
+/include/
+/lib*/
+generated/
+/Source/Urho3D/tolua++-prefix/
+build/
+build-*/
+*.git/
+/captures/
+.cxx/
+/demo/
+
+# Output files
+/Source/**/*.a
+/Source/**/*.exe
+/Source/ThirdParty/Assimp/revision.h
+/Source/ThirdParty/Assimp/contrib/zlib/zconf.h
+/Source/ThirdParty/Assimp/include/assimp/config.h
+/Source/ThirdParty/LuaJIT/src/host/buildvm
+/Source/ThirdParty/LuaJIT/src/host/buildvm_arch.h
+/Source/ThirdParty/LuaJIT/src/host/minilua
+/Source/Urho3D/Precompiled.cpp
+/Source/Urho3D/Urho3D.h
+/Source/Urho3D/Urho3D.pc
+/Source/Urho3D/Urho3D.pc.msvc
+/Source/Urho3D/Urho3DAll.h
+/Source/Urho3D/librevision.h
+
+# Compiled shaders
+*.vs?
+*.ps?
+
+# Compiled AngelScript
+*.asc
+
+# Compiled Lua script
+*.luc
+
+# Generated documentation
+/Docs/html/
+/Docs/qch/
+
+# Saved sample scenes
+/bin/Data/Scenes/Isometric2D.xml
+/bin/Data/Scenes/Platformer2D.xml
+
+# Eclipse project settings
+/.*project
+/.settings
+
+# KDevelop project settings
+/*.kdev?
+
+# Qt Creator project settings
+/CMakeLists.txt.user
+
+# VSCode project settings
+/.vscode/
+
+# JetBrains IDE project settings
+/.idea/
+/cmake-build-*/
+*.iml
+
+# Code::Blocks project settings
+/*.cbp
+
+# Codelite project settings
+/*.project
+/*.workspace
+
+# Gradle project settings
+.gradle
+
+# Android project settings
+/local.properties
+
+# Visual Studio project settings
+/.vs/
+/CMakeSettings.json
+/out/
+
+# CMake generated build files
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Makefile
+cmake_install.cmake
+install_manifest.txt
+CPackConfig.cmake
+CPackSourceConfig.cmake
+CTestTestfile.cmake
+/Source/**/*.cmake
+!/Source/ThirdParty/SDL/cmake/*.cmake
+!/Source/ThirdParty/SDL/include/*cmake
+!/Source/ThirdParty/Assimp/cmake-modules/*cmake
+/Docs/**/*.cmake
+
+# Precompiled header files
+*.gch/
+*.pch/
+*.pch.*
+
+# Custom rake tasks
+/.rake/
+.rake_t_cache
+
+# Misc.
+configure*
+*~
+*.swp
+.DS_Store
+*.log
+*.bak
+Thumbs.db
+workboard.db
+workboard.db-shm
+workboard.db-wal
+*.db
+*.db-shm
+*.db-wal
+.directory
+
+# Markdown files (documentation) - except tracked documentation
+*.md
+!README.md
+!OPTIMIZATION_TRACKING.md
+!PHASE_*.md
+!ARCHITECTURE_PHASE1.md
+!API_REFERENCE_PHASE1.md
+!INTEGRATION_GUIDE_PHASE1.md
+!WEEK2_INTEGRATION_PLAN.md
+!Docs/**/*.md
+
+# Doxygen mess from absence of 'dot' dependency
+CMakeDoxyfile.in
+CMakeDoxygenDefaults.cmake
+
+# CMake compile commands (generated, large)
+compile_commands.json
+
+# Additional build directories
+build_test/
+
+# Archive/graveyard/staging — not for shipping
+morgue/
+Graveyard/
+staging/
+Staging/
+website/
+brainfarts*/
+Claude.disabled/
+src/
+
+# Claudette — scaffolding, not product
+Source/Tools/Claudette/
+*laudette*.log
+
+# No plain text or database files in shipped builds
+*.txt
+!CMakeLists.txt
+*.db
+*.db-shm
+*.db-wal
+
+# Accidentally committed files now removed
+coder_tasks.txt
+done
+gdb_crash_log.txt
+greeting.py
+sphere.xml
+VulkanTexture_may9_known_good.cpp
+ClaudeCodeTeamHooks.zip
+
+# Claude Code local files — local only, never ship
+.claude/
+Claude/
+
+# Security: Credentials and secrets
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.p8
+.aws/
+.ssh/
+credentials.json
+secrets.json
+token.txt
+api_key.txt
+anthropic_key*
+claude_key*
+*.api_key
+.anthropic/
+assets_raw/
+bin/Autoload/
+*.tar.gz
+*.tar.bz2
+Source/Tools/Gary/inbox/
+Source/Tools/Gary/outbox/
+Source/Tools/Gary/sent/
+*.broken_*
+brainfarts/
+downloads/
+
+# Big data — NOT the product. Pretrained model weights are secondary scaffolding
+# (useful for training, not the deliverable, not for public). Yuki's brain/runtime
+# data and large staging assets stay local. Left out per Leith 2026-06-18.
+*.gguf
+Source/Tools/YukiHoho/models/
+*.cart
+Staging/sketchfab/
+brainfarts_sfx_placeholders/
+
+# Yuki/sine training scratch — harnesses, runners, corpus, broker scratch.
+# Local-only working files, not the product. Relocated CSVs live in Claude/.
+/sine_harness.cpp
+/yuki_learn_harness.cpp
+/run_sine_harness.sh
+/run_yuki_harness.sh
+/yuki_seed_memories.sh
+/restore_ownership.sh
+/yuki_corpus.json
+/yuki_corpus.txt
+/broker_scratch/
+.aider*

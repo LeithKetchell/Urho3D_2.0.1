@@ -1,0 +1,3 @@
+<technique vs="CelestialBody" ps="CelestialBody">
+    <pass name="postopaque" blend="alpha" depthwrite="false" />
+</technique>

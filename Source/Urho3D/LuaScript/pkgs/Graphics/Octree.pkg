@@ -1,0 +1,137 @@
+$#include "Graphics/Octree.h"
+
+class Octree : public Component
+{
+    void SetSize(const BoundingBox& box, unsigned numLevels);
+    void Update(const FrameInfo& frame);
+    void AddManualDrawable(Drawable* drawable);
+    void RemoveManualDrawable(Drawable* drawable);
+
+    // void GetDrawables(OctreeQuery& query) const;
+    tolua_outside const Vector<OctreeQueryResult>& OctreeGetDrawablesPoint @ GetDrawables(const Vector3& point, unsigned char drawableFlags = DRAWABLE_ANY, unsigned viewMask = DEFAULT_VIEWMASK) const;
+    tolua_outside const Vector<OctreeQueryResult>& OctreeGetDrawablesBoundingBox @ GetDrawables(const BoundingBox& box, unsigned char drawableFlags = DRAWABLE_ANY, unsigned viewMask = DEFAULT_VIEWMASK) const;
+    tolua_outside const Vector<OctreeQueryResult>& OctreeGetDrawablesFrustum @ GetDrawables(const Frustum& frustum, unsigned char drawableFlags = DRAWABLE_ANY, unsigned viewMask = DEFAULT_VIEWMASK) const;
+    tolua_outside const Vector<OctreeQueryResult>& OctreeGetDrawablesSphere @ GetDrawables(const Sphere& sphere, unsigned char drawableFlags = DRAWABLE_ANY, unsigned viewMask = DEFAULT_VIEWMASK) const;
+    tolua_outside const Vector<OctreeQueryResult>& OctreeGetAllDrawables @ GetAllDrawables(unsigned char drawableFlags = DRAWABLE_ANY, unsigned viewMask = DEFAULT_VIEWMASK) const;
+
+    // void Raycast(RayOctreeQuery& query) const;
+    tolua_outside const Vector<RayQueryResult>& OctreeRaycast @ Raycast(const Ray& ray, RayQueryLevel level, float maxDistance, unsigned char drawableFlags, unsigned viewMask = DEFAULT_VIEWMASK) const;
+    // void RaycastSingle(RayOctreeQuery& query) const;
+    tolua_outside RayQueryResult OctreeRaycastSingle @ RaycastSingle(const Ray& ray, RayQueryLevel level, float maxDistance, unsigned char drawableFlags, unsigned viewMask = DEFAULT_VIEWMASK) const;
+
+    unsigned GetNumLevels() const;
+
+    void QueueUpdate(Drawable* drawable);
+    void DrawDebugGeometry(bool depthTest);
+
+    tolua_readonly tolua_property__get_set unsigned numLevels;
+};
+
+${
+static const Vector<OctreeQueryResult>& OctreeGetDrawablesPoint(const Octree* octree, const Vector3& point, unsigned char drawableFlags = DRAWABLE_ANY, unsigned viewMask = DEFAULT_VIEWMASK)
+{
+    Vector<Drawable*> drawableResult;
+    PointOctreeQuery query(drawableResult, point, drawableFlags, viewMask);
+    octree->GetDrawables(query);
+
+    static Vector<OctreeQueryResult> result;
+    result.Resize(drawableResult.Size());
+    for (unsigned i = 0; i < drawableResult.Size(); ++i)
+    {
+        result[i].drawable_ = drawableResult[i];
+        result[i].node_ = drawableResult[i]->GetNode();
+    }
+    return result;
+}
+
+static const Vector<OctreeQueryResult>& OctreeGetDrawablesBoundingBox(const Octree* octree, const BoundingBox& box, unsigned char drawableFlags = DRAWABLE_ANY, unsigned viewMask = DEFAULT_VIEWMASK)
+{
+    Vector<Drawable*> drawableResult;
+    BoxOctreeQuery query(drawableResult, box, drawableFlags, viewMask);
+    octree->GetDrawables(query);
+
+    static Vector<OctreeQueryResult> result;
+    result.Resize(drawableResult.Size());
+    for (unsigned i = 0; i < drawableResult.Size(); ++i)
+    {
+        result[i].drawable_ = drawableResult[i];
+        result[i].node_ = drawableResult[i]->GetNode();
+    }
+    return result;
+}
+
+static const Vector<OctreeQueryResult>& OctreeGetDrawablesFrustum(const Octree* octree, const Frustum& frustum, unsigned char drawableFlags = DRAWABLE_ANY, unsigned viewMask = DEFAULT_VIEWMASK)
+{
+    Vector<Drawable*> drawableResult;
+    FrustumOctreeQuery query(drawableResult, frustum, drawableFlags, viewMask);
+    octree->GetDrawables(query);
+
+    static Vector<OctreeQueryResult> result;
+    result.Resize(drawableResult.Size());
+    for (unsigned i = 0; i < drawableResult.Size(); ++i)
+    {
+        result[i].drawable_ = drawableResult[i];
+        result[i].node_ = drawableResult[i]->GetNode();
+    }
+    return result;
+}
+
+static const Vector<OctreeQueryResult>& OctreeGetDrawablesSphere(const Octree* octree, const Sphere& sphere, unsigned char drawableFlags = DRAWABLE_ANY, unsigned viewMask = DEFAULT_VIEWMASK)
+{
+    Vector<Drawable*> drawableResult;
+    SphereOctreeQuery query(drawableResult, sphere, drawableFlags, viewMask);
+    octree->GetDrawables(query);
+
+    static Vector<OctreeQueryResult> result;
+    result.Resize(drawableResult.Size());
+    for (unsigned i = 0; i < drawableResult.Size(); ++i)
+    {
+        result[i].drawable_ = drawableResult[i];
+        result[i].node_ = drawableResult[i]->GetNode();
+    }
+    return result;
+}
+
+static const Vector<OctreeQueryResult>& OctreeGetAllDrawables(const Octree* octree, unsigned char drawableFlags = DRAWABLE_ANY, unsigned viewMask = DEFAULT_VIEWMASK)
+{
+    Vector<Drawable*> drawableResult;
+    AllContentOctreeQuery query(drawableResult, drawableFlags, viewMask);
+    octree->GetDrawables(query);
+
+    static Vector<OctreeQueryResult> result;
+    result.Resize(drawableResult.Size());
+    for (unsigned i = 0; i < drawableResult.Size(); ++i)
+    {
+        result[i].drawable_ = drawableResult[i];
+        result[i].node_ = drawableResult[i]->GetNode();
+    }
+    return result;
+}
+
+static RayQueryResult OctreeRaycastSingle(const Octree* octree, const Ray& ray, RayQueryLevel level, float maxDistance, unsigned char drawableFlags, unsigned viewMask = DEFAULT_VIEWMASK)
+{
+    Vector<RayQueryResult> result;
+    RayOctreeQuery query(result, ray, level, maxDistance, drawableFlags, viewMask);
+    octree->RaycastSingle(query);
+    if (!query.result_.Empty())
+        return query.result_[0];
+    else
+    {
+        RayQueryResult empty;
+        empty.position_ = Vector3::ZERO;
+        empty.normal_ = Vector3::ZERO;
+        empty.distance_ = M_INFINITY;
+        empty.subObject_ = 0;
+        return empty;
+    }
+}
+
+static const Vector<RayQueryResult>& OctreeRaycast(const Octree* octree, const Ray& ray, RayQueryLevel level, float maxDistance, unsigned char drawableFlags, unsigned viewMask = DEFAULT_VIEWMASK)
+{
+    static Vector<RayQueryResult> result;
+    result.Clear();
+    RayOctreeQuery query(result, ray, level, maxDistance, drawableFlags, viewMask);
+    octree->Raycast(query);
+    return result;
+}
+$}

@@ -1,0 +1,11 @@
+{
+  "name": "Footstep",
+  "category": "audio",
+  "color": "#4080FF",
+  "description": "Footstep sound trigger with surface awareness",
+  "fields": [
+    { "name": "surface", "type": "String", "default": "dirt", "description": "Surface type (dirt, stone, grass, wood, water)" },
+    { "name": "volume", "type": "Float", "default": 0.8, "description": "Sound volume 0-1" },
+    { "name": "foot", "type": "String", "default": "left", "description": "Which foot (left or right)" }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "name": "Particle",
+  "category": "vfx",
+  "color": "#FFD700",
+  "description": "Spawn a particle effect at a bone position",
+  "fields": [
+    { "name": "bone", "type": "String", "default": "", "description": "Bone name (empty = root node)" },
+    { "name": "effect", "type": "String", "default": "Particle/Fire.xml", "description": "Particle effect resource path" },
+    { "name": "duration", "type": "Float", "default": 2.0, "description": "Effect duration in seconds" }
+  ]
+}

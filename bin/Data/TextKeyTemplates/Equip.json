@@ -1,0 +1,14 @@
+{
+  "name": "Equip",
+  "category": "props",
+  "color": "#FF8040",
+  "description": "Attach a prop model to a bone during animation",
+  "fields": [
+    { "name": "bone", "type": "String", "default": "RightHand", "description": "Bone name to attach to" },
+    { "name": "model", "type": "String", "default": "Models/Weapons/Axe.mdl", "description": "Model resource path" },
+    { "name": "material", "type": "String", "default": "", "description": "Optional material override" },
+    { "name": "offset", "type": "String", "default": "0,0,0", "description": "Position offset (x,y,z)" },
+    { "name": "rotation", "type": "String", "default": "0,0,0", "description": "Euler rotation (x,y,z degrees)" },
+    { "name": "scale", "type": "String", "default": "1", "description": "Uniform scale or x,y,z" }
+  ]
+}

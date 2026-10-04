@@ -1,0 +1,23 @@
+<material>
+    <!-- The water example will assign the reflection texture to the diffuse unit -->
+    <!-- The engine will automatically assign the refraction (viewport) texture to the environment unit during refract pass -->
+    <technique name="Techniques/Water.xml" />
+    <cull value="none" />
+    <texture unit="normal" name="Textures/WaterNoise.dds" />
+    <parameter name="NoiseSpeed" value="0.05 0.05" />
+    <parameter name="NoiseTiling" value="50" />
+    <parameter name="NoiseStrength" value="0.02" />
+    <parameter name="FresnelPower" value="3" />
+    <parameter name="WaterTint" value="0.95 0.95 1.0" />
+    <parameter name="ShallowColor" value="0.2 0.6 0.5" />
+    <parameter name="DeepColor" value="0.02 0.1 0.2" />
+    <parameter name="DepthScale" value="1.5" />
+    <parameter name="RippleStrength" value="0.4" />
+    <parameter name="RippleScale" value="512" />
+    <parameter name="MoonDir" value="0 1 0" />
+    <parameter name="MoonColor" value="0.5 0.55 0.8" />
+    <parameter name="MoonSpecular" value="0" />
+    <parameter name="SunDir" value="0 1 0" />
+    <parameter name="SunColor" value="1.0 0.92 0.8" />
+    <parameter name="SunSpecular" value="0" />
+</material>

@@ -1,0 +1,11 @@
+{
+  "name": "IKTarget",
+  "category": "ik",
+  "color": "#40CC40",
+  "description": "Set an IK target for a bone chain",
+  "fields": [
+    { "name": "bone", "type": "String", "default": "RightHand", "description": "End effector bone" },
+    { "name": "target", "type": "String", "default": "", "description": "Target node name" },
+    { "name": "weight", "type": "Float", "default": 1.0, "description": "IK weight 0-1" }
+  ]
+}

@@ -1,0 +1,3 @@
+<technique vs="Grass" ps="Grass" vsdefines="DIFFMAP DENSITYMAP" psdefines="DIFFMAP ALPHAMASK HEIGHTFOG" >
+    <pass name="base" />
+</technique>

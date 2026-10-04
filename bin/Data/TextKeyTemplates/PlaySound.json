@@ -1,0 +1,11 @@
+{
+  "name": "PlaySound",
+  "category": "audio",
+  "color": "#4080FF",
+  "description": "Play a sound effect at this point in the animation",
+  "fields": [
+    { "name": "sound", "type": "ResourceRef", "resourceType": "Sound", "default": "Sounds/Effect.ogg", "description": "Sound resource path" },
+    { "name": "volume", "type": "Float", "default": 1.0, "description": "Playback volume 0-1" },
+    { "name": "pitch_jitter", "type": "Float", "default": 0.05, "description": "Random pitch variation +/- range" }
+  ]
+}

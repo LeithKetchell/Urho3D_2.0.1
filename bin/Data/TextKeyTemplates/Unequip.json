@@ -1,0 +1,9 @@
+{
+  "name": "Unequip",
+  "category": "props",
+  "color": "#FF6020",
+  "description": "Detach a prop from a bone during animation",
+  "fields": [
+    { "name": "bone", "type": "String", "default": "RightHand", "description": "Bone name to detach from" }
+  ]
+}

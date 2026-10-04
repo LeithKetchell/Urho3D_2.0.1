@@ -1,0 +1,11 @@
+<material>
+    <technique name="Techniques/DiffSkyboxBlend.xml" />
+    <texture unit="diffuse" name="Textures/SkyboxSpring.xml" />
+    <texture unit="specular" name="Textures/SkyboxSummer.xml" />
+    <texture unit="environment" name="Textures/Stars.xml" />
+    <parameter name="NightFactor" value="0.0" />
+    <parameter name="CloudAngle" value="0.0" />
+    <parameter name="StarAngle" value="0.0" />
+    <parameter name="SeasonBlend" value="0.0" />
+    <cull value="none" />
+</material>

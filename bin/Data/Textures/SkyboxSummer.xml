@@ -1,0 +1,8 @@
+<cubemap>
+    <face name="Summer_PosX.png" />
+    <face name="Summer_NegX.png" />
+    <face name="Summer_PosY.png" />
+    <face name="Summer_NegY.png" />
+    <face name="Summer_PosZ.png" />
+    <face name="Summer_NegZ.png" />
+</cubemap>

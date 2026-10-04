@@ -1,0 +1,13 @@
+{
+  "name": "TaskProp",
+  "category": "props",
+  "color": "#40C080",
+  "description": "Map NPC server task to held prop — equip tool when starting task, unequip when done",
+  "fields": [
+    { "name": "task", "type": "String", "default": "gather", "description": "Server task name (gather, hunt, craft, build, fish, farm, cook)" },
+    { "name": "bone", "type": "String", "default": "RightHand", "description": "Bone to attach prop to" },
+    { "name": "model", "type": "String", "default": "Models/Tools/axe.mdl", "description": "Tool model for this task" },
+    { "name": "offset", "type": "String", "default": "0,0,0", "description": "Position offset (x,y,z)" },
+    { "name": "rotation", "type": "String", "default": "0,0,0", "description": "Euler rotation (x,y,z degrees)" }
+  ]
+}

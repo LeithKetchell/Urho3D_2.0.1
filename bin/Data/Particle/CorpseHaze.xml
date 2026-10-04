@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<!--
+  Death System Phase 4 — subtle ambient particle for the corpse.
+  Slow upward drift, low emission rate, small size, brown-grey transparent.
+  Reuses the smoke material so no new texture asset is required. Active
+  forever — the emitter dies when the corpse node is removed.
+-->
+<particleeffect>
+	<material name="Materials/Smoke.xml" />
+	<numparticles value="40" />
+	<updateinvisible enable="false" />
+	<relative enable="true" />
+	<scaled enable="true" />
+	<sorted enable="true" />
+	<animlodbias value="0" />
+	<emittertype value="Sphere" />
+	<emittersize value="0.3 0.1 0.3" />
+	<direction min="-0.1 0.4 -0.1" max="0.1 0.6 0.1" />
+	<constantforce value="0 0.05 0" />
+	<dampingforce value="0.4" />
+	<activetime value="0" />
+	<inactivetime value="0" />
+	<emissionrate min="2" max="3" />
+	<particlesize min="0.25 0.25" max="0.4 0.4" />
+	<timetolive min="3" max="5" />
+	<velocity min="0.05" max="0.2" />
+	<rotation min="0" max="360" />
+	<rotationspeed min="-15" max="15" />
+	<sizedelta add="0.05" mul="1.0" />
+	<colorfade color="0.35 0.30 0.25 0" time="0" />
+	<colorfade color="0.35 0.30 0.25 0.18" time="1.5" />
+	<colorfade color="0.40 0.35 0.30 0" time="5" />
+</particleeffect>

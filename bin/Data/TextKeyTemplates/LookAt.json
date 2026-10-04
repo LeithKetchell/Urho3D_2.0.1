@@ -1,0 +1,12 @@
+{
+  "name": "LookAt",
+  "category": "ik",
+  "color": "#40CC40",
+  "description": "Drive head/eye look-at toward a target",
+  "fields": [
+    { "name": "target", "type": "String", "default": "", "description": "Target node name (empty = camera)" },
+    { "name": "weight", "type": "Float", "default": 1.0, "description": "IK blend weight 0-1" },
+    { "name": "blend_in", "type": "Float", "default": 0.2, "description": "Blend-in time in seconds" },
+    { "name": "blend_out", "type": "Float", "default": 0.2, "description": "Blend-out time in seconds" }
+  ]
+}

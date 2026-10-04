@@ -1,0 +1,8 @@
+<renderpath>
+    <command type="quad" tag="WaterDroplets" vs="WaterDroplets" ps="WaterDroplets" psdefines="WATERDROPS" output="viewport">
+        <parameter name="BreachTime" value="-100.0" />
+        <parameter name="DryDuration" value="6.0" />
+        <parameter name="DropletIntensity" value="0.3" />
+        <texture unit="diffuse" name="viewport" />
+    </command>
+</renderpath>

@@ -1,0 +1,8 @@
+<cubemap>
+    <face name="Winter_PosX.png" />
+    <face name="Winter_NegX.png" />
+    <face name="Winter_PosY.png" />
+    <face name="Winter_NegY.png" />
+    <face name="Winter_PosZ.png" />
+    <face name="Winter_NegZ.png" />
+</cubemap>

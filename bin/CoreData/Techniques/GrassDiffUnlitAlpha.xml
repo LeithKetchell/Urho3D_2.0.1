@@ -1,0 +1,3 @@
+<technique vs="GrassUnlit" ps="GrassUnlit" vsdefines="DIFFMAP" psdefines="DIFFMAP ALPHAMASK" >
+    <pass name="base" />
+</technique>

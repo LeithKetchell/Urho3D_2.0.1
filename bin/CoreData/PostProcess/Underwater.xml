@@ -1,0 +1,16 @@
+<renderpath>
+    <command type="quad" tag="Underwater" vs="Underwater" ps="Underwater" psdefines="UNDERWATER HWDEPTH" output="viewport">
+        <parameter name="WaterLevel" value="0.0" />
+        <parameter name="NoiseStrength" value="0.02" />
+        <parameter name="NoiseTiling" value="1.0" />
+        <parameter name="NoiseSpeed" value="0.05 0.05" />
+        <parameter name="UnderwaterColor" value="0.0 0.2 0.3" />
+        <parameter name="TintIntensity" value="0.3" />
+        <parameter name="DepthFalloff" value="0.02" />
+        <parameter name="BreachDepth" value="2.0" />
+        <parameter name="MainCameraY" value="7.0" />
+        <texture unit="diffuse" name="viewport" />
+        <texture unit="depth" name="depth" />
+        <texture unit="normal" name="Textures/WaterNoise.dds" />
+    </command>
+</renderpath>

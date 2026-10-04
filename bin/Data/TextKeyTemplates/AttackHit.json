@@ -1,0 +1,12 @@
+{
+  "name": "AttackHit",
+  "category": "combat",
+  "color": "#FF4040",
+  "description": "Damage window for a melee attack",
+  "fields": [
+    { "name": "frame_window", "type": "Vector3", "default": [0.18, 0.25, 0.0], "description": "Start/end time of active hitbox (Z unused)" },
+    { "name": "damage_mult", "type": "Float", "default": 1.0, "description": "Damage multiplier for this swing" },
+    { "name": "bone", "type": "String", "default": "RightHand", "description": "Bone the hitbox is attached to" },
+    { "name": "radius", "type": "Float", "default": 0.4, "description": "Hitbox sphere radius" }
+  ]
+}

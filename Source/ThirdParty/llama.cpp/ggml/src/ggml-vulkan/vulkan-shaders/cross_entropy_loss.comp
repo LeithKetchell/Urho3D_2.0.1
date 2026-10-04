@@ -1,0 +1,102 @@
+#version 450
+
+#include "generic_head.glsl"
+#include "types.glsl"
+
+#extension GL_EXT_control_flow_attributes : enable
+#define BLOCK_SIZE 512
+
+layout(local_size_x = BLOCK_SIZE, local_size_y = 1, local_size_z = 1) in;
+
+// Forward pass for cross-entropy loss.
+// Computes: loss = -mean_over_rows(sum_over_cols(target * log_softmax(logit)))
+//
+// Matches CPU: ggml_compute_forward_cross_entropy_loss_f32
+// src[0] = logits [nr * nc]
+// src[1] = targets [nr * nc] (one-hot or soft labels)
+// dst    = scalar loss (1 float)
+//
+// Push constants:
+//   p.KX = nc (number of classes / vocab size)
+//   p.KY = nr (number of rows)
+//
+// Dispatch: single workgroup (1, 1, 1).
+// The workgroup iterates over all rows sequentially, performing parallel
+// column reductions within each row. This is correct for training where
+// loss computation is not the bottleneck (backward matmul dominates).
+// If profiling shows this as a hotspot, split into per-row + reduce pass.
+
+layout (binding = 0) readonly buffer X {A_TYPE data_x[];};   // logits [nr * nc]
+layout (binding = 1) readonly buffer L {B_TYPE data_l[];};    // targets [nr * nc]
+layout (binding = 2) writeonly buffer D {D_TYPE data_d[];};   // scalar output [1]
+
+shared FLOAT_TYPE tmp[BLOCK_SIZE];
+
+void main() {
+    const uint tid = gl_LocalInvocationID.x;
+
+    FLOAT_TYPE total_loss = FLOAT_TYPE(0.0f);
+
+    for (uint row = 0; row < p.KY; row++) {
+        // Phase 1: find max logit in this row (numerical stability)
+        tmp[tid] = FLOAT_TYPE(-1.0f / 0.0f); // -inf
+        [[unroll]] for (uint col = tid; col < p.KX; col += BLOCK_SIZE) {
+            tmp[tid] = max(tmp[tid], FLOAT_TYPE(data_x[row * p.KX + col]));
+        }
+
+        barrier();
+        [[unroll]] for (int s = BLOCK_SIZE / 2; s > 0; s >>= 1) {
+            if (tid < s) {
+                tmp[tid] = max(tmp[tid], tmp[tid + s]);
+            }
+            barrier();
+        }
+
+        const FLOAT_TYPE max_val = tmp[0];
+
+        // Phase 2: compute sum(exp(logit - max)) for log-sum-exp
+        barrier();
+        tmp[tid] = FLOAT_TYPE(0.0f);
+        [[unroll]] for (uint col = tid; col < p.KX; col += BLOCK_SIZE) {
+            tmp[tid] += exp(FLOAT_TYPE(data_x[row * p.KX + col]) - max_val);
+        }
+
+        barrier();
+        [[unroll]] for (int s = BLOCK_SIZE / 2; s > 0; s >>= 1) {
+            if (tid < s) {
+                tmp[tid] += tmp[tid + s];
+            }
+            barrier();
+        }
+
+        const FLOAT_TYPE log_sum_exp = log(tmp[0]);
+
+        // Phase 3: compute sum(target * log_softmax)
+        // log_softmax(x_i) = (x_i - max) - log(sum(exp(x - max)))
+        barrier();
+        tmp[tid] = FLOAT_TYPE(0.0f);
+        [[unroll]] for (uint col = tid; col < p.KX; col += BLOCK_SIZE) {
+            const uint idx = row * p.KX + col;
+            const FLOAT_TYPE log_sm = FLOAT_TYPE(data_x[idx]) - max_val - log_sum_exp;
+            tmp[tid] += log_sm * FLOAT_TYPE(data_l[idx]);
+        }
+
+        barrier();
+        [[unroll]] for (int s = BLOCK_SIZE / 2; s > 0; s >>= 1) {
+            if (tid < s) {
+                tmp[tid] += tmp[tid + s];
+            }
+            barrier();
+        }
+
+        if (tid == 0) {
+            total_loss += tmp[0];
+        }
+        barrier();
+    }
+
+    // Final: loss = -mean(per_row_losses) = -total / nr
+    if (tid == 0) {
+        data_d[0] = D_TYPE(-total_loss / FLOAT_TYPE(p.KY));
+    }
+}

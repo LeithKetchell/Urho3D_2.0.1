@@ -1,0 +1,8 @@
+<cubemap>
+    <face name="Spring_PosX.png" />
+    <face name="Spring_NegX.png" />
+    <face name="Spring_PosY.png" />
+    <face name="Spring_NegY.png" />
+    <face name="Spring_PosZ.png" />
+    <face name="Spring_NegZ.png" />
+</cubemap>

@@ -1,0 +1,10 @@
+{
+  "name": "StateChange",
+  "category": "logic",
+  "color": "#CCCC40",
+  "description": "Signal a state change in the animation-driven state machine",
+  "fields": [
+    { "name": "state", "type": "String", "default": "", "description": "Target state name" },
+    { "name": "param", "type": "String", "default": "", "description": "Optional parameter for the state" }
+  ]
+}

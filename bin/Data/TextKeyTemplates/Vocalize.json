@@ -1,0 +1,10 @@
+{
+  "name": "Vocalize",
+  "category": "audio",
+  "color": "#4080FF",
+  "description": "Trigger a voice line or vocalization",
+  "fields": [
+    { "name": "line_id", "type": "String", "default": "grunt_01", "description": "Voice line identifier" },
+    { "name": "volume", "type": "Float", "default": 1.0, "description": "Playback volume 0-1" }
+  ]
+}

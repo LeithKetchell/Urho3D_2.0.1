@@ -1,0 +1,140 @@
+{
+  "Rabbit": {
+    "altitudeMin": 5.5,
+    "altitudeMax": 40.0,
+    "biomes": ["grassland", "riverbank", "desert"],
+    "waterDistMin": 2.0,
+    "waterDistMax": 60.0,
+    "density": 5,
+    "groupSize": [2, 4],
+    "nearBuilding": false
+  },
+  "Deer": {
+    "altitudeMin": 5.5,
+    "altitudeMax": 60.0,
+    "biomes": ["grassland", "forest"],
+    "waterDistMin": 3.0,
+    "waterDistMax": 80.0,
+    "density": 8,
+    "groupSize": [2, 5],
+    "nearBuilding": false
+  },
+  "Fox": {
+    "altitudeMin": 5.5,
+    "altitudeMax": 50.0,
+    "biomes": ["forest", "grassland", "desert"],
+    "waterDistMin": 2.0,
+    "waterDistMax": 80.0,
+    "density": 3,
+    "groupSize": [1, 2],
+    "nearBuilding": false
+  },
+  "Stag": {
+    "altitudeMin": 10.0,
+    "altitudeMax": 70.0,
+    "biomes": ["forest", "mountain"],
+    "waterDistMin": 5.0,
+    "waterDistMax": 80.0,
+    "density": 3,
+    "groupSize": [1, 3],
+    "nearBuilding": false
+  },
+  "Wolf": {
+    "altitudeMin": 8.0,
+    "altitudeMax": 70.0,
+    "biomes": ["forest", "mountain", "desert"],
+    "waterDistMin": 3.0,
+    "waterDistMax": 100.0,
+    "density": 2,
+    "groupSize": [2, 4],
+    "nearBuilding": false
+  },
+  "Bull": {
+    "altitudeMin": 5.5,
+    "altitudeMax": 35.0,
+    "biomes": ["grassland"],
+    "waterDistMin": 3.0,
+    "waterDistMax": 50.0,
+    "density": 2,
+    "groupSize": [1, 2],
+    "nearBuilding": false
+  },
+  "Cow": {
+    "altitudeMin": 5.5,
+    "altitudeMax": 35.0,
+    "biomes": ["grassland", "riverbank"],
+    "waterDistMin": 2.0,
+    "waterDistMax": 50.0,
+    "density": 3,
+    "groupSize": [2, 4],
+    "nearBuilding": false
+  },
+  "Donkey": {
+    "altitudeMin": 5.5,
+    "altitudeMax": 50.0,
+    "biomes": ["grassland", "mountain", "desert"],
+    "waterDistMin": 3.0,
+    "waterDistMax": 60.0,
+    "density": 2,
+    "groupSize": [1, 3],
+    "nearBuilding": false
+  },
+  "Horse": {
+    "altitudeMin": 5.5,
+    "altitudeMax": 50.0,
+    "biomes": ["grassland", "desert"],
+    "waterDistMin": 3.0,
+    "waterDistMax": 80.0,
+    "density": 2,
+    "groupSize": [1, 3],
+    "nearBuilding": false
+  },
+  "Alpaca": {
+    "altitudeMin": 15.0,
+    "altitudeMax": 70.0,
+    "biomes": ["grassland", "mountain", "desert"],
+    "waterDistMin": 5.0,
+    "waterDistMax": 60.0,
+    "density": 3,
+    "groupSize": [2, 5],
+    "nearBuilding": false
+  },
+  "Husky": {
+    "altitudeMin": 5.5,
+    "altitudeMax": 40.0,
+    "biomes": ["grassland", "riverbank", "forest"],
+    "waterDistMin": 1.0,
+    "waterDistMax": 30.0,
+    "density": 2,
+    "groupSize": [1, 2],
+    "nearBuilding": true
+  },
+  "ShibaInu": {
+    "altitudeMin": 5.5,
+    "altitudeMax": 40.0,
+    "biomes": ["grassland", "riverbank"],
+    "waterDistMin": 1.0,
+    "waterDistMax": 30.0,
+    "density": 2,
+    "groupSize": [1, 2],
+    "nearBuilding": true
+  },
+  "Fish": {
+    "altitudeMin": -999.0,
+    "altitudeMax": 5.0,
+    "biomes": ["water"],
+    "minWaterDepth": 1.0,
+    "density": 50,
+    "groupSize": [1, 1],
+    "nearBuilding": false
+  },
+  "SchoolFish": {
+    "altitudeMin": -999.0,
+    "altitudeMax": 5.0,
+    "biomes": ["water"],
+    "minWaterDepth": 2.0,
+    "density": 3,
+    "groupSize": [15, 15],
+    "nearBuilding": false
+  }
+}

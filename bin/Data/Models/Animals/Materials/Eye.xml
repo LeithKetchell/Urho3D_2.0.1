@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<material>
+	<technique name="Techniques/Diff.xml" />
+	<texture unit="diffuse" name="Textures/Animals/doe-head.png" />
+	<parameter name="MatDiffColor" value="0.443025 0.456376 0.406197 1" />
+	<parameter name="MatSpecColor" value="0.45679 0.45679 0.45679 81.9608" />
+	<parameter name="MatEmissiveColor" value="0 0 0 1" />
+</material>

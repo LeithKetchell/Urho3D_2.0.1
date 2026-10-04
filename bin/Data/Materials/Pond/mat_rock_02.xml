@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<material>
+	<technique name="Techniques/DiffNormal.xml" />
+	<texture unit="diffuse" name="Textures/Pond/rock2.png" />
+	<texture unit="normal" name="Textures/Pond/rock2_n.png" />
+	<parameter name="MatDiffColor" value="0.8 0.8 0.8 1" />
+	<parameter name="MatSpecColor" value="0.15 0.15 0.15 32" />
+	<parameter name="MatEmissiveColor" value="0 0 0 1" />
+</material>

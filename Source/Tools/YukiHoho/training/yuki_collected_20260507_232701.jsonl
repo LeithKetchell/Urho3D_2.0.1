@@ -1,0 +1,1 @@
+{"messages": [{"role": "user", "content": "Leith wants you to read the file bin/Data/Training/html_tutorial.txt\n"}, {"role": "assistant", "content": "!read bin/Data/Training/html_tutorial.txt"}]}

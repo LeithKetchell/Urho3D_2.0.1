@@ -1,0 +1,14 @@
+<renderpath>
+    <command type="quad" tag="MoonRays" vs="GodRays" ps="GodRays" output="viewport">
+        <parameter name="LightScreenPos" value="0.5 0.5" />
+        <parameter name="LightRadius" value="0.05" />
+        <parameter name="GodRayDensity" value="0.5" />
+        <parameter name="GodRayDecay" value="0.97" />
+        <parameter name="GodRayWeight" value="0.4" />
+        <parameter name="GodRayExposure" value="0.4" />
+        <parameter name="GodRayColor" value="0.6 0.7 0.9" />
+        <parameter name="GodRayIntensity" value="0.8" />
+        <texture unit="diffuse" name="viewport" />
+        <texture unit="depth" name="depth" />
+    </command>
+</renderpath>

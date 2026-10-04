@@ -1,0 +1,21 @@
+{
+    "tips": [
+        "Use the numpad for single-keypress prompts (Y/N, menu selections). Main keyboard won't register without Enter.",
+        "Workboard commands: wb-add-done, wb-add-ready, wb-assign, wb-remove. All flock-serialized for multi-instance safety.",
+        "ModelViewer accepts IPC commands: load, browse, keep, reject. Send from any Claude instance via socket.",
+        "Pipeline cache stale? Delete ~/.local/share/urho3d/pipeline_cache.bin after shader edits.",
+        "File locks stuck? Use Clear File Locks in WorkboardManager, or: rm -rf /tmp/urho_claude/locks/*",
+        "WorkboardClient connects to WorkboardManager over LAN. Manager is the broker, not a viewer.",
+        "Task notes live in Claude/TASK_*.md. Read before starting, update as you work. Next coder depends on it.",
+        "safe_build.sh acquires a per-target flock. Two coders building the same target won't corrupt each other.",
+        "Stale PID file? Check with ps -p <PID>. Dead process = safe to remove the .pid file and reclaim the role.",
+        "Context menu: right-click in the terminal for copy, paste, search, and font options.",
+        "Status bar colors: green = ready, orange = busy, yellow = settling, red = stuck.",
+        "Scrollback: Shift+PageUp/PageDown to scroll. Mouse wheel works too.",
+        "/revive starts a fresh Claude session. Session state does not carry over.",
+        "Protocol.h is a shared file. Get Leith's permission before editing — both server and client depend on it.",
+        "CLAUDETTE_VERSION: odd sub-version = beta, even = release candidate. Bump before every rebuild.",
+        "First instance to start is the janitor — cleans stale PIDs, dead sockets, orphaned locks.",
+        "Claudette is the thin shell. Claude is the workhorse. The interface should never block on the backend."
+    ]
+}

@@ -1,0 +1,4 @@
+<cubemap>
+    <image name="Cubemap_Sky_18-512x512.png" layout="horizontal" />
+    <quality low="0" />
+</cubemap>
