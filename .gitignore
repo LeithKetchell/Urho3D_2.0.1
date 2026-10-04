@@ -219,6 +219,7 @@ downloads/
 *.gguf
 Source/Tools/YukiHoho/models/
 *.cart
+*.cart.best
 Staging/sketchfab/
 brainfarts_sfx_placeholders/
 

@@ -36,6 +36,22 @@ private:
     WorkboardLLM* owner_;
 };
 
+// ── Capability mask bits ─────────────────────────────────────────────────────
+// Grant these explicitly. Default for WorkboardManager is CAP_ALL (unchanged).
+// Miles starts with none and adds only what Leith allows at launch.
+static const unsigned CAP_LIST_DIR   = (1u <<  0);
+static const unsigned CAP_READ_FILE  = (1u <<  1);
+static const unsigned CAP_WRITE_FILE = (1u <<  2);
+static const unsigned CAP_EXEC_SHELL = (1u <<  3);
+static const unsigned CAP_WB_MUTATE  = (1u <<  4);
+static const unsigned CAP_IPC        = (1u <<  5);
+static const unsigned CAP_SPAWN      = (1u <<  6);
+static const unsigned CAP_BUILD      = (1u <<  7);
+static const unsigned CAP_CURL       = (1u <<  8);
+static const unsigned CAP_ABSORB     = (1u <<  9);
+static const unsigned CAP_REMEMBER   = (1u << 10);
+static const unsigned CAP_ALL        = ~0u;
+
 class WorkboardLLM
 {
     friend class LLMLoadThread;
@@ -43,6 +59,9 @@ class WorkboardLLM
 
 public:
     explicit WorkboardLLM(Context* context) : context_(context), loadThread_(this), inferenceThread_(this) {}
+
+    void SetCapabilityMask(unsigned mask) { capabilities_ = mask; }
+    unsigned GetCapabilityMask() const { return capabilities_; }
     ~WorkboardLLM() { UnloadModel(); }
 
     /// Start loading a GGUF LLM on a background thread. Non-blocking.
@@ -199,6 +218,7 @@ private:
     volatile int loadThreadTid_{0};
 
     // ── Tools ──
+    unsigned capabilities_{CAP_ALL};
     String toolContext_;
     float toolCooldown_{0.0f};
     float curlCooldown_{0.0f};

@@ -953,7 +953,8 @@ String WorkboardLLM::ExecuteTools(const String& llmOutput)
 
         if (line.StartsWith("!read "))
         {
-            // Parse: !read <path> [offset] [limit]
+            if (!(capabilities_ & CAP_READ_FILE))
+                { results += "[BLOCKED: --allow-read not granted]\n"; continue; }
             Vector<String> args = line.Substring(6).Trimmed().Split(' ');
             String readPath = args.Size() > 0 ? args[0] : String::EMPTY;
             unsigned readOffset = args.Size() > 1 ? (unsigned)atoi(args[1].CString()) : 0;
@@ -963,24 +964,48 @@ String WorkboardLLM::ExecuteTools(const String& llmOutput)
             result = ToolReadFile(readPath, readOffset, readLimit);
         }
         else if (line.StartsWith("!ls "))
+        {
+            if (!(capabilities_ & CAP_LIST_DIR))
+                { results += "[BLOCKED: --allow-ls not granted]\n"; continue; }
             result = ToolListDir(line.Substring(4).Trimmed());
+        }
         else if (line.StartsWith("!wb "))
+        {
+            if (!(capabilities_ & CAP_WB_MUTATE))
+                { results += "[BLOCKED: --allow-wb not granted]\n"; continue; }
             result = ToolWorkboard(line.Substring(4).Trimmed());
+        }
         else if (line.StartsWith("!ipc "))
         {
+            if (!(capabilities_ & CAP_IPC))
+                { results += "[BLOCKED: --allow-ipc not granted]\n"; continue; }
             String rest = line.Substring(5).Trimmed();
             unsigned spaceIdx = rest.Find(' ');
             if (spaceIdx != String::NPOS)
                 result = ToolIPCSend(rest.Substring(0, spaceIdx), rest.Substring(spaceIdx + 1).Trimmed());
         }
         else if (line.StartsWith("!sh "))
+        {
+            if (!(capabilities_ & CAP_EXEC_SHELL))
+                { results += "[BLOCKED: --allow-exec not granted]\n"; continue; }
             result = ToolShell(line.Substring(4).Trimmed());
+        }
         else if (line.StartsWith("!spawn-coder"))
+        {
+            if (!(capabilities_ & CAP_SPAWN))
+                { results += "[BLOCKED: --allow-spawn not granted]\n"; continue; }
             result = ToolSpawnCoder();
+        }
         else if (line.StartsWith("!build "))
+        {
+            if (!(capabilities_ & CAP_BUILD))
+                { results += "[BLOCKED: --allow-build not granted]\n"; continue; }
             result = ToolBuild(line.Substring(7).Trimmed());
+        }
         else if (line.StartsWith("!curl "))
         {
+            if (!(capabilities_ & CAP_CURL))
+                { results += "[BLOCKED: --allow-curl not granted]\n"; continue; }
             if (curlCooldown_ > 0.0f)
             {
                 results += "[CURL COOLDOWN] wait " + String((int)curlCooldown_) + "s\n";
@@ -990,7 +1015,11 @@ String WorkboardLLM::ExecuteTools(const String& llmOutput)
             curlCooldown_ = CURL_COOLDOWN;
         }
         else if (line.StartsWith("!absorb "))
+        {
+            if (!(capabilities_ & CAP_ABSORB))
+                { results += "[BLOCKED: --allow-absorb not granted]\n"; continue; }
             result = ToolAbsorb(line.Substring(8).Trimmed());
+        }
         else if (line.StartsWith("!remember"))
         {
             // Content may be inline ("!remember some text") or multi-line until !end
