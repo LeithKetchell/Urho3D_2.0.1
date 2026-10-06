@@ -25,7 +25,7 @@ jobs:
             artifact: build/lib/Urho3D.lib
 
           - name: macOS
-            os: macos-latest
+            os: macos-13
             artifact: build/lib/libUrho3D.a
 
     steps:
@@ -58,6 +58,7 @@ jobs:
           cmake -B build
           -DURHO3D_VULKAN=1
           -DURHO3D_GLSLANG=1
+          -DURHO3D_DATABASE_SQLITE=1
           -DCMAKE_BUILD_TYPE=Release
           -DURHO3D_SAMPLES=0
           -DURHO3D_TOOLS=0

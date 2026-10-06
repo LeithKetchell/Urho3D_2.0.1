@@ -107,10 +107,4 @@ template <> inline hash32 MakeHash(const i8& value)
     return value;
 }
 
-/// uint64_t hash function (explicit specialization for cross-platform compatibility).
-template <> inline hash32 MakeHash(const uint64_t& value)
-{
-    return (hash32)((value >> 32u) | (value & 0xffffffffu));
-}
-
 }
