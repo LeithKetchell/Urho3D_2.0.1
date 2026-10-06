@@ -70,6 +70,7 @@ void Claudia::Start()
 
     auto* style = cache->GetResource<XMLFile>("UI/DefaultStyle.xml");
     if (style) ui->GetRoot()->SetDefaultStyle(style);
+    ui->SetUseSystemClipboard(true);
 
     font_ = cache->GetResource<Font>("Fonts/Anonymous Pro.ttf");
     if (!font_) font_ = cache->GetResource<Font>("Fonts/DejaVuSansMono.ttf");
@@ -85,6 +86,9 @@ void Claudia::Start()
     auto* input = GetSubsystem<Input>();
     input->SetMouseMode(MM_ABSOLUTE);
     input->SetMouseVisible(true);
+
+    // Give the input box focus immediately so typing works on launch.
+    inputEdit_->SetFocus(true);
 
     AppendSystem("Claudia " CLAUDIA_VERSION " | " + model_);
     AppendSystem("CWD: " + cwd_);
@@ -247,9 +251,56 @@ void Claudia::HandleSendClicked(StringHash, VariantMap&)
 void Claudia::HandleKeyDown(StringHash, VariantMap& eventData)
 {
     using namespace KeyDown;
-    int key = eventData[P_KEY].GetI32();
+    int key   = eventData[P_KEY].GetI32();
+    int quals = eventData[P_QUALIFIERS].GetI32();
+
     if ((key == KEY_RETURN || key == KEY_KP_ENTER) && inputEdit_->HasFocus())
+    {
         Submit(inputEdit_->GetText().Trimmed());
+        return;
+    }
+
+    if (quals & QUAL_CTRL)
+    {
+        auto* ui = GetSubsystem<UI>();
+
+        if (key == KEY_V)
+        {
+            // Paste at cursor position in input field.
+            const String& clip = ui->GetClipboardText();
+            if (!clip.Empty())
+            {
+                if (!inputEdit_->HasFocus()) inputEdit_->SetFocus(true);
+                unsigned cursor = inputEdit_->GetCursorPosition();
+                String text = inputEdit_->GetText();
+                text.Insert(cursor, clip);
+                inputEdit_->SetText(text);
+                inputEdit_->SetCursorPosition(cursor + clip.LengthUTF8());
+            }
+        }
+        else if (key == KEY_C)
+        {
+            // Copy current input text to clipboard.
+            const String& text = inputEdit_->GetText();
+            if (!text.Empty()) ui->SetClipboardText(text);
+        }
+        else if (key == KEY_A)
+        {
+            // Select all — move cursor to end (Urho3D LineEdit selects from 0 to cursor).
+            if (inputEdit_->HasFocus())
+                inputEdit_->SetCursorPosition(inputEdit_->GetText().LengthUTF8());
+        }
+        else if (key == KEY_X)
+        {
+            // Cut input text to clipboard.
+            const String& text = inputEdit_->GetText();
+            if (!text.Empty())
+            {
+                ui->SetClipboardText(text);
+                inputEdit_->SetText(String::EMPTY);
+            }
+        }
+    }
 }
 
 void Claudia::HandleInputFocus(StringHash, VariantMap& eventData)
