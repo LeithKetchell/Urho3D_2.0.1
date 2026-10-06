@@ -77,8 +77,14 @@ void Claudia::Start()
     CreateUI();
     LoadGrants();
 
-    SubscribeToEvent(E_UPDATE,  URHO3D_HANDLER(Claudia, HandleUpdate));
-    SubscribeToEvent(E_KEYDOWN, URHO3D_HANDLER(Claudia, HandleKeyDown));
+    SubscribeToEvent(E_UPDATE,      URHO3D_HANDLER(Claudia, HandleUpdate));
+    SubscribeToEvent(E_KEYDOWN,     URHO3D_HANDLER(Claudia, HandleKeyDown));
+    SubscribeToEvent(E_INPUTFOCUS,  URHO3D_HANDLER(Claudia, HandleInputFocus));
+
+    // Claudia is a pure UI app — cursor must be visible and uncaptured at all times.
+    auto* input = GetSubsystem<Input>();
+    input->SetMouseMode(MM_ABSOLUTE);
+    input->SetMouseVisible(true);
 
     AppendSystem("Claudia " CLAUDIA_VERSION " | " + model_);
     AppendSystem("CWD: " + cwd_);
@@ -244,6 +250,18 @@ void Claudia::HandleKeyDown(StringHash, VariantMap& eventData)
     int key = eventData[P_KEY].GetI32();
     if ((key == KEY_RETURN || key == KEY_KP_ENTER) && inputEdit_->HasFocus())
         Submit(inputEdit_->GetText().Trimmed());
+}
+
+void Claudia::HandleInputFocus(StringHash, VariantMap& eventData)
+{
+    using namespace InputFocus;
+    if (eventData[P_FOCUS].GetBool())
+    {
+        // Window regained focus — restore cursor so it never stays hidden after alt-tab.
+        auto* input = GetSubsystem<Input>();
+        input->SetMouseMode(MM_ABSOLUTE);
+        input->SetMouseVisible(true);
+    }
 }
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -57,6 +57,7 @@ private:
     void HandleSendClicked(StringHash eventType, VariantMap& eventData);
     void HandleKeyDown(StringHash eventType, VariantMap& eventData);
     void HandleUpdate(StringHash eventType, VariantMap& eventData);
+    void HandleInputFocus(StringHash eventType, VariantMap& eventData);
 
     // Anthropic API (streaming SSE)
     void   SendToAPI();

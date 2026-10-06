@@ -107,4 +107,14 @@ template <> inline hash32 MakeHash(const i8& value)
     return value;
 }
 
+// On GCC/Clang, uint64_t may be 'unsigned long' while u64 is 'unsigned long long' --
+// distinct types that both need specializations. MSVC treats them as the same type
+// and rejects a second specialization (C2766), so exclude it there.
+#if !defined(_MSC_VER)
+template <> inline hash32 MakeHash(const uint64_t& value)
+{
+    return (hash32)((value >> 32u) | (value & 0xffffffffu));
+}
+#endif
+
 }
